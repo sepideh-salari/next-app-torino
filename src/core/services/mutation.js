@@ -23,6 +23,19 @@ const useCheckOtp = () => {
   return useMutation({ mutationFn, onSuccess });
 };
 
+const useLogout = () => {
+  const queryClient = useQueryClient();
+
+  const mutationFn = async () => {
+    setCookie("accessToken", "", -1);
+    setCookie("refreshToken", "", -1);
+
+    queryClient.setQueryData(["user-data"], null);
+  };
+
+  return useMutation({ mutationFn });
+};
+
 const useUpdateBankAccount = () => {
   const queryClient = useQueryClient();
 
@@ -56,6 +69,7 @@ const useCheckout = () => {
 export {
   useSendOtp,
   useCheckOtp,
+  useLogout,
   useUpdateBankAccount,
   useAddToBasket,
   useCheckout,

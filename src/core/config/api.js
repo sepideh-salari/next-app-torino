@@ -6,23 +6,21 @@ const api = axios.create({
   headers: { "Content-Type": "application/json" },
 });
 
-// Helper function to get tokens
 const getNewTokens = async () => {
   const refreshToken = getCookie("refreshToken");
-  if (!refreshToken) return;
+  if (!refreshToken) return null;
 
   try {
-    const response = await axios.post(
+    const { data } = await axios.post(
       `${process.env.NEXT_PUBLIC_BASE_URL}/auth/refresh-token`,
       { refreshToken }
     );
-    return { response };
+    return { accessToken: data.accessToken, refreshToken: data.refreshToken };
   } catch {
     return null;
   }
 };
 
-// Request Interceptor
 api.interceptors.request.use(
   (request) => {
     const accessToken = getCookie("accessToken");
@@ -34,22 +32,23 @@ api.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
-// Response Interceptor
 api.interceptors.response.use(
   (response) => response,
   async (error) => {
     const originalRequest = error.config;
 
-    // Handle token expiration (401) and retry logic
-    if (error.response?.status === 401 && !originalRequest._retry) {
+    if (error.response?.status === 403 && !originalRequest._retry) {
       originalRequest._retry = true;
 
       const tokens = await getNewTokens();
-      if (error.response?.status === 201) {
-        setCookie("accessToken", res?.response?.data?.accessToken, 30);
-        return api(originalRequest); // Retry the original request
+      if (tokens && tokens.accessToken) {
+        setCookie("accessToken", tokens.accessToken, 30);
+        setCookie("refreshToken", tokens.refreshToken, 365);
+        originalRequest.headers[
+          "Authorization"
+        ] = `Bearer ${tokens.accessToken}`;
+        return api(originalRequest);
       } else {
-        // Clear invalid tokens if refresh fails
         ["accessToken", "refreshToken"].forEach((token) =>
           setCookie(token, "", 0)
         );
