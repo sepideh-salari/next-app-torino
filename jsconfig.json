@@ -2,7 +2,9 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "@/fonts/*": ["./styles/*"]
+      "@/module/*": ["src/components/module/*"],
+      "@/providers/*": ["src/providers/*"],
+      "@/utils/*": ["src/core/utils/*"]
     }
   }
 }

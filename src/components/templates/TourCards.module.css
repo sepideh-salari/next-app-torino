@@ -1,0 +1,18 @@
+.container {
+  width: 100%;
+  max-width: 1182px;
+  margin: auto;
+  text-align: right;
+  font-family: var(--font-vazirmatn);
+}
+
+.container h2 {
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+
+.subContainer {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}

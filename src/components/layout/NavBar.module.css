@@ -1,0 +1,113 @@
+.navBarContainer {
+  width: 100%;
+  position: sticky;
+  top: 0;
+  background-color: white;
+  z-index: 1000;
+  height: 74px;
+}
+.navBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+}
+
+.menu {
+  display: flex;
+  direction: rtl;
+  list-style: none;
+}
+
+.menu li {
+  font-size: 16px;
+  display: inline-block;
+  margin-left: 40px;
+}
+
+.menu li a {
+  text-decoration: none;
+  font-family: var(--font-yekan);
+  font-weight: 300;
+  color: black;
+  transition: color 0.3s ease;
+  font-size: 16px;
+}
+.menu li:first-child a {
+  color: #28a745;
+}
+.menu li a:hover {
+  color: #4f5255;
+}
+.authentication {
+  width: 166 px;
+  height: 44 px;
+  border: solid 2px #28a745;
+  border-radius: 8px;
+  display: flex;
+  font-family: Vazir FD-WOL;
+  font-weight: 500;
+  font-size: 18px;
+  line-height: 28px;
+  letter-spacing: 1px;
+  padding: 2px 8px 2px 10px;
+  color: #28a745;
+  background-color: #fff;
+}
+
+.authentication p {
+  margin: 0;
+  font-family: "Vazirmatn";
+}
+.logo {
+  margin-right: 126px;
+}
+.dropdown {
+  position: relative;
+  display: inline-block;
+  cursor: pointer;
+}
+
+.dropdownButton {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+
+.dropdownContent {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background: white;
+  border-radius: 5px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  min-width: 150px;
+  padding: 10px;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(10px);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+/* Show dropdown on hover */
+.dropdown:hover .dropdownContent {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+/* Dropdown items */
+.dropdownContent a {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px;
+  text-decoration: none;
+  color: black;
+  font-size: 14px;
+  transition: background 0.2s;
+}
+
+.dropdownContent a:hover {
+  background: rgba(0, 0, 0, 0.05);
+}
