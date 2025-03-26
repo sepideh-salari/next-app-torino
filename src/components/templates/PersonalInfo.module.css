@@ -27,7 +27,6 @@
   font-family: var(--font-yekan);
   font-size: 14px;
   background-color: #fff;
-  margin-right: 32px;
 }
 
 .input:disabled {
@@ -54,4 +53,16 @@
 .error {
   color: red;
   font-size: 12px;
+}
+.firstRow {
+  display: flex;
+  justify-content: space-between;
+}
+.secondRow {
+  display: flex;
+  gap: 150px;
+}
+.thirdRow {
+  display: flex;
+  gap: 309px;
 }
