@@ -19,7 +19,7 @@ export default function AccountInfo() {
   const phoneNumber = user.mobile || "در حال بارگذاری...";
 
   const prefillForm = () => {
-    setValue("email", user.email || "_");
+    setValue("email", user.email || "-");
   };
 
   const handleSave = async (data) => {
