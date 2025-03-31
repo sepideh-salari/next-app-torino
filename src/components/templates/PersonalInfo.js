@@ -75,9 +75,9 @@ export default function PersonalInfo() {
         <div className={styles.firstRow}>
           <h2 className={styles.title}>اطلاعات شخصی</h2>
           <button
-            type={isEditing ? "submit" : "button"}
+            type="button"
             className={styles.button}
-            onClick={isEditing ? null : () => setIsEditing(true)}
+            onClick={() => setIsEditing((prev) => !prev)}
           >
             <Image src="/edit-2.png" width={16} height={16} alt="edit icon" />
             {isEditing ? "ذخیره" : "ویرایش اطلاعات"}

@@ -1,13 +1,13 @@
 "use client";
-
 import { useState, useEffect } from "react";
+import { useGetUserData } from "src/core/services/queries";
+import api from "src/core/config/api";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-import api from "src/core/config/api";
+import toast from "react-hot-toast";
 import styles from "./BankAccountForm.module.css";
 import Image from "next/image";
-import toast from "react-hot-toast";
 
 const schema = yup.object().shape({
   shaba_code: yup
@@ -27,45 +27,63 @@ const schema = yup.object().shape({
     .required("شماره حساب الزامی است"),
 });
 
-export default function BankAccountForm({ user }) {
-  const [isEditing, setIsEditing] = useState(false);
-
+export default function BankAccountForm() {
+  const { data, isLoading, error } = useGetUserData();
   const {
     register,
+    handleSubmit,
     setValue,
     formState: { errors },
   } = useForm({ resolver: yupResolver(schema) });
 
+  const [isEditing, setIsEditing] = useState(false);
+  const user = data?.data || {};
+
   useEffect(() => {
-    if (user?.payment) {
-      setValue("shaba_code", user.payment.shaba_code || "");
-      setValue("debitCard_code", user.payment.debitCard_code || "");
-      setValue("accountIdentifier", user.payment.accountIdentifier || "");
+    if (data) {
+      setValue("shaba_code", user.payment?.shaba_code || "");
+      setValue("debitCard_code", user.payment?.debitCard_code || "");
+      setValue("accountIdentifier", user.payment?.accountIdentifier || "");
     }
-  }, [user, setValue]);
+  }, [data, setValue]);
+
+  const handleSave = async (formData) => {
+    try {
+      await api.put("/user/profile", {
+        payment: { ...formData },
+      });
+
+      setIsEditing(false);
+      toast.success("اطلاعات حساب بانکی ذخیره شد!");
+    } catch (err) {
+      console.error("Error updating bank information:", err);
+      toast.error("خطا در ذخیره اطلاعات حساب بانکی");
+    }
+  };
+
+  if (isLoading) return <p>در حال بارگذاری...</p>;
+  if (error) return <p>خطا در دریافت اطلاعات</p>;
 
   return (
     <div className={styles.container}>
-      <div className={styles.firstRow}>
-        <h2 className={styles.title}>اطلاعات حساب بانکی</h2>
-        {!isEditing && (
+      <form onSubmit={handleSubmit(handleSave)}>
+        <div className={styles.firstRow}>
+          <h2 className={styles.title}>اطلاعات حساب بانکی</h2>
           <button
             type="button"
             className={styles.button}
-            onClick={() => setIsEditing(true)}
+            onClick={() => setIsEditing((prev) => !prev)}
           >
             <Image src="/edit-2.png" width={16} height={16} alt="edit icon" />
-            ویرایش اطلاعات
+            {isEditing ? "ذخیره" : "ویرایش اطلاعات"}
           </button>
-        )}
-      </div>
+        </div>
 
-      <div>
         <label className={styles.label}>شماره شبا</label>
         <input
           type="text"
-          value={user?.payment?.shaba_code || ""}
-          disabled
+          {...register("shaba_code")}
+          disabled={!isEditing}
           className={styles.input}
         />
         {errors.shaba_code && (
@@ -75,8 +93,8 @@ export default function BankAccountForm({ user }) {
         <label className={styles.label}>شماره کارت</label>
         <input
           type="text"
-          value={user?.payment?.debitCard_code || ""}
-          disabled
+          {...register("debitCard_code")}
+          disabled={!isEditing}
           className={styles.input}
         />
         {errors.debitCard_code && (
@@ -86,8 +104,8 @@ export default function BankAccountForm({ user }) {
         <label className={styles.label}>شماره حساب</label>
         <input
           type="text"
-          value={user?.payment?.accountIdentifier || ""}
-          disabled
+          {...register("accountIdentifier")}
+          disabled={!isEditing}
           className={styles.input}
         />
         {errors.accountIdentifier && (
@@ -95,7 +113,7 @@ export default function BankAccountForm({ user }) {
             {errors.accountIdentifier.message}
           </span>
         )}
-      </div>
+      </form>
     </div>
   );
 }
